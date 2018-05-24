@@ -1,0 +1,10 @@
+
+SampleAspNetCoreApplication/.vs/SampleAspNetCoreApplication/v15/.suo
+*.dll
+*.pdb
+obj/
+bin/
+SampleAspNetCoreApplication/.vs/SampleAspNetCoreApplication/DesignTimeBuild/.dtbcache
+SampleAspNetCoreApplication/.vs/SampleAspNetCoreApplication/v15/Server/sqlite3/storage.ide
+SampleAspNetCoreApplication/.vs/SampleAspNetCoreApplication/v15/Server/sqlite3/storage.ide-shm
+SampleAspNetCoreApplication/.vs/SampleAspNetCoreApplication/v15/Server/sqlite3/storage.ide-wal
