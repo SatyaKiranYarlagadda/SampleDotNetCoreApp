@@ -10,13 +10,11 @@ namespace API.Infrastructure.FaultTolerance
     public class RetryableOperation : IRetryableOperation
     {
         private readonly ILogger _logger;
-        private readonly ICorrelationContextAccessor _correlationContext;
         private readonly int _defaultRetryAttemptInSeconds = 1;
 
-        public RetryableOperation(ILogger logger, ICorrelationContextAccessor correlationContext)
+        public RetryableOperation(ILogger logger)
         {
             _logger = logger;
-            correlationContext = _correlationContext;
         }
 
         public async Task<TResult> TryExecuteAsync<TResult>(Func<Task<TResult>> actionToPerform, Func<Exception, bool> isRetryableException, int retryCount = 5, TimeSpan? retryAttempt = null, bool isLinearRetry = false)
