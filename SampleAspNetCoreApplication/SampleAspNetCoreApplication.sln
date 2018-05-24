@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleAspNetCoreApplication", "SampleAspNetCoreApplication\SampleAspNetCoreApplication.csproj", "{7440272F-4AF8-439E-B759-71D1614FF811}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleAspNetCoreApplication", "SampleAspNetCoreApplication\SampleAspNetCoreApplication.csproj", "{7440272F-4AF8-439E-B759-71D1614FF811}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5822D9C8-F260-44B2-924B-E7C97DCD2009}"
 EndProject
@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Health
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resilience.Http", "src\BuildingBlocks\Resilience\Resilience.Http\Resilience.Http.csproj", "{114EF54E-FFEA-4E98-AF94-F0ECEF9EFEDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Infrastructure", "src\BuildingBlocks\Infrastructure\API.Infrastructure\API.Infrastructure.csproj", "{A80A3A45-F1AA-49A6-A0A8-32C190EB6266}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.Infrastructure", "src\BuildingBlocks\Infrastructure\API.Infrastructure\API.Infrastructure.csproj", "{A80A3A45-F1AA-49A6-A0A8-32C190EB6266}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "TestApplication\TestApplication.csproj", "{5ADB68DA-4312-45E4-B541-93162B5945CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{A80A3A45-F1AA-49A6-A0A8-32C190EB6266}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A80A3A45-F1AA-49A6-A0A8-32C190EB6266}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A80A3A45-F1AA-49A6-A0A8-32C190EB6266}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ADB68DA-4312-45E4-B541-93162B5945CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ADB68DA-4312-45E4-B541-93162B5945CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ADB68DA-4312-45E4-B541-93162B5945CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ADB68DA-4312-45E4-B541-93162B5945CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

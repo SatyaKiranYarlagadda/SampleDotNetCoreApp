@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using BuildingBlocks.Resilience.Http;
 using CorrelationId;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SampleAspNetCoreApplication.Configuration;
 using SampleAspNetCoreApplication.Exceptions;
+using SampleAspNetCoreApplication.Models;
 
 namespace SampleAspNetCoreApplication.Controllers
 {
@@ -12,12 +15,16 @@ namespace SampleAspNetCoreApplication.Controllers
     public class SamplesController : Controller
     {
         private ACMEConfig _acmeConfig { get; }
+        private TestAppicationSettings _testSettings { get; }
         private readonly ICorrelationContextAccessor _correlationContext;
+        private readonly IHttpClient _httpClient;
 
-        public SamplesController(IOptions<ACMEConfig> acmeConfig, ICorrelationContextAccessor correlationContext)
+        public SamplesController(IOptions<ACMEConfig> acmeConfig, IOptions<TestAppicationSettings> testSettings, ICorrelationContextAccessor correlationContext, IHttpClient httpClient)
         {
             _acmeConfig = acmeConfig.Value;
+            _testSettings = testSettings.Value;
             _correlationContext = correlationContext;
+            _httpClient = httpClient;
         }
 
         // GET api/samples
@@ -58,20 +65,11 @@ namespace SampleAspNetCoreApplication.Controllers
 
         // POST api/samples
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<IActionResult> Post([FromBody]AddSampleRequest request)
         {
-        }
-
-        // PUT api/samples/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/samples/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+            var path = _testSettings.Endpoint + "api/values";
+            var result = await _httpClient.GetStringAsync(path);
+            return Ok(result);
+        }        
     }
 }

@@ -27,6 +27,7 @@ namespace SampleAspNetCoreApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ACMEConfig>(Configuration.GetSection("ACMEConfig"));
+            services.Configure<TestAppicationSettings>(Configuration.GetSection("TestAppication"));
 
             services.AddSingleton<CDriveHasMoreThan1GbFreeHealthCheck>();
 
