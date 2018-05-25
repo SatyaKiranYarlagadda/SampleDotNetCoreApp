@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using API.Infrastructure.Exceptions;
+using API.Infrastructure.FaultTolerance;
 using BuildingBlocks.Resilience.Http;
 using CorrelationId;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +20,16 @@ namespace SampleAspNetCoreApplication.Controllers
         private TestAppicationSettings _testSettings { get; }
         private readonly ICorrelationContextAccessor _correlationContext;
         private readonly IHttpClient _httpClient;
+        private readonly IRetryableOperation _retryableOperation;
 
-        public SamplesController(IOptions<ACMEConfig> acmeConfig, IOptions<TestAppicationSettings> testSettings, ICorrelationContextAccessor correlationContext, IHttpClient httpClient)
+        public SamplesController(IOptions<ACMEConfig> acmeConfig, IOptions<TestAppicationSettings> testSettings,
+            ICorrelationContextAccessor correlationContext, IHttpClient httpClient, IRetryableOperation retryableOperation)
         {
             _acmeConfig = acmeConfig.Value;
             _testSettings = testSettings.Value;
             _correlationContext = correlationContext;
             _httpClient = httpClient;
+            _retryableOperation = retryableOperation;
         }
 
         // GET api/samples
@@ -61,6 +66,30 @@ namespace SampleAspNetCoreApplication.Controllers
         public string GetCorrelationContext()
         {
             return _correlationContext.CorrelationContext.CorrelationId;
+        }
+
+        [HttpPost("RetryOperation")]
+        public string PerformRetryOperation()
+        {
+            return _retryableOperation.TryExecute<string>(() =>
+            {
+                Random rnd = new Random();
+                var result = rnd.Next(1, 10) % 2;
+                if (result == 0)
+                    return "Lucky!! Even number this time";
+                else if (rnd.Next(1, 5) == 3)
+                {
+                    throw new Exception("Sorry can't get an even, try it again...");
+                }
+                else
+                    throw new DomainException("This is Domain Exception");
+            },
+            (exception) => 
+            {
+                if (exception is DomainException)
+                    return true;
+                return false;
+            });
         }
 
         // POST api/samples

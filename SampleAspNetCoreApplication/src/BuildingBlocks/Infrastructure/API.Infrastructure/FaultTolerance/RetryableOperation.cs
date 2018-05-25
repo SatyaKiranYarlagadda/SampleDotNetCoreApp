@@ -9,10 +9,11 @@ namespace API.Infrastructure.FaultTolerance
 {
     public class RetryableOperation : IRetryableOperation
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<RetryableOperation> _logger;
         private readonly int _defaultRetryAttemptInSeconds = 1;
+        private readonly int _exceptionsAllowedBeforeBreaking = 5;
 
-        public RetryableOperation(ILogger logger)
+        public RetryableOperation(ILogger<RetryableOperation> logger)
         {
             _logger = logger;
         }
@@ -35,6 +36,22 @@ namespace API.Infrastructure.FaultTolerance
                         _logger.LogWarning(msg);
                         _logger.LogDebug(msg);
                     }),
+                Policy.Handle<Exception>(isRetryableException)
+                .CircuitBreakerAsync( 
+                   // number of exceptions before breaking circuit
+                   _exceptionsAllowedBeforeBreaking,
+                   // time circuit opened before retry
+                   TimeSpan.FromMinutes(1),
+                   (exception, duration) =>
+                   {
+                        // on circuit opened
+                        _logger.LogTrace("Circuit breaker opened");
+                   },
+                   () =>
+                   {
+                        // on circuit closed
+                        _logger.LogTrace("Circuit breaker reset");
+                   })
             };
 
             var policyWrap = PolicyWrap.WrapAsync(policies);
@@ -59,6 +76,22 @@ namespace API.Infrastructure.FaultTolerance
                         _logger.LogWarning(msg);
                         _logger.LogDebug(msg);
                     }),
+                Policy.Handle<Exception>(isRetryableException)
+                .CircuitBreaker( 
+                   // number of exceptions before breaking circuit
+                   _exceptionsAllowedBeforeBreaking,
+                   // time circuit opened before retry
+                   TimeSpan.FromMinutes(1),
+                   (exception, duration) =>
+                   {
+                        // on circuit opened
+                        _logger.LogTrace("Circuit breaker opened");
+                   },
+                   () =>
+                   {
+                        // on circuit closed
+                        _logger.LogTrace("Circuit breaker reset");
+                   })
             };
 
             var policyWrap = PolicyWrap.Wrap(policies);

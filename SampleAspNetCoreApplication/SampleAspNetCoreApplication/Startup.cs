@@ -1,4 +1,5 @@
-﻿using API.Infrastructure.Filters;
+﻿using API.Infrastructure.FaultTolerance;
+using API.Infrastructure.Filters;
 using API.Infrastructure.HttpClient;
 using BuildingBlocks.Resilience.Http;
 using CorrelationId;
@@ -78,6 +79,8 @@ namespace SampleAspNetCoreApplication
             {
                 services.AddSingleton<IHttpClient, StandardHttpClient>();
             }
+
+            services.AddSingleton<IRetryableOperation, RetryableOperation>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
