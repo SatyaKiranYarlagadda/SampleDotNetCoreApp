@@ -9,11 +9,12 @@ namespace SampleAspNetCoreApplication.Domain.Commands
 
         public SaveProductCommand(Product item)
         {
-            Guard.ArgumentNotNullOrEmpty(nameof(item.Id), item.Id);
+            // Guard.ArgumentNotNullOrEmpty(nameof(item.Id), item.Id);
             Guard.ArgumentNotNullOrEmpty(nameof(item.Name), item.Name);
             Guard.ArgumentValid(item.Price > 0, nameof(item.Price), item.Price.ToString());
             Guard.ArgumentValid(item.Quantity >= 0, nameof(item.Quantity), item.Quantity.ToString());
 
+            item.Id = "4";
             Product = item;
         }
     }

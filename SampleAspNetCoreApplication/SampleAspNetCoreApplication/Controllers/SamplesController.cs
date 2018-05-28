@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using API.Infrastructure.ActionResults;
 using API.Infrastructure.Exceptions;
 using API.Infrastructure.FaultTolerance;
 using BuildingBlocks.Resilience.Http;
 using CorrelationId;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SampleAspNetCoreApplication.Configuration;
 using SampleAspNetCoreApplication.Domain;
 using SampleAspNetCoreApplication.Domain.Commands;
@@ -114,26 +116,38 @@ namespace SampleAspNetCoreApplication.Controllers
             return handler.Get();
         }
 
+        [HttpGet("Products")]
+        public IEnumerable<Product> GetProducts()
+        {
+            var query = new GetAllProductsQuery();
+            var handler = QueryHandlerFactory.Build(query);
+            return handler.Get();
+        }
+
         [HttpPost("Products")]
         public IActionResult Post([FromBody]Product item)
         {
             var command = new SaveProductCommand(item);
             var handler = CommandHandlerFactory.Build(command);
             var response = handler.Execute();
-            if (response.Success)
+            if (response.Success.HasValue && response.Success.Value)
             {
-                item.Id = response.Id;
-                return Ok(item);
+                var result = new ResponseObject
+                {
+                    Status = ResponseStatusCode.Success,
+                    Data = response
+                };
+
+                return Ok(result);
             }
 
-            // an example of what might have gone wrong
-            var message = new HttpResponseMessage(HttpStatusCode.InternalServerError)
-            {
-                Content = new StringContent(response.Message),
-                ReasonPhrase = "InternalServerError"
-            };
-
-            throw new HttpException(message);
+            throw new InternalServerErrorApiException<ResponseObject>(
+                "Failed to create product.",
+                new ResponseObject
+                {
+                    Status = ResponseStatusCode.Error,
+                    Message = $"Failed to create Product: {item.Name}"
+                });
         }
     }
 }

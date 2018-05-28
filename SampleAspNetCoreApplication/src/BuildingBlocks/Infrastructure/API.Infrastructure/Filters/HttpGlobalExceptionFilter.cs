@@ -30,14 +30,23 @@ namespace API.Infrastructure.Filters
 
             if (context.Exception is DomainException)
             {
-                var exception = context.Exception as DomainException;
-                var json = new JsonErrorResponse
+                if (context.Exception is DomainApiResultException<ResponseObject>)
                 {
-                    Messages = new[] { exception.Message, $"CorrelationId: {_correlationContext.CorrelationContext.CorrelationId}" }
-                };
+                    var exception = context.Exception as DomainApiResultException<ResponseObject>;
+                    context.Result = new ObjectResult(exception.ExceptionDetails);
+                    context.HttpContext.Response.StatusCode = (int)exception.HttpStatusCode;
+                }
+                else
+                {
+                    var exception = context.Exception as DomainException;
+                    var json = new JsonErrorResponse
+                    {
+                        Messages = new[] { exception.Message, $"CorrelationId: {_correlationContext.CorrelationContext.CorrelationId}" }
+                    };
 
-                context.Result = new ObjectResult(json);
-                context.HttpContext.Response.StatusCode = (int)exception.HttpStatusCode;
+                    context.Result = new ObjectResult(json);
+                    context.HttpContext.Response.StatusCode = (int)exception.HttpStatusCode;
+                }
             }
             else
             {
